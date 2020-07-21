@@ -1,30 +1,38 @@
 const https = require("https");
 
 module.exports = {
-    "get": async function (api) {
+    "get": async function (api, headers = {}) {
         if (!api) throw "Specify Endpoint";
-        return new Promise(async (resolve, reject) => {
-            var data = "";
-            https.get(api, async (resp) => {
+        if (!headers["Content-Type"])
+            headers["Content-Type"] = "application/json";
+        const Query = api.split("/");
+        const hostname = Query.slice(2, 3)[0];
+        const path = Query.slice(3).join("/");
 
-                resp.on("data", (chunk) => {
-                    // HTTP sends Data in chunks. Add chunk to form data.
+        var options = {
+            hostname: hostname,
+            path: "/" + path,
+            headers: headers,
+        }
+
+        return new Promise(async (resolve, reject) => {
+            https.get(options, (resp) => {
+                var data = "";
+                resp.on('data', (chunk) => {
                     data += chunk;
                 });
-
-                resp.on("end", () => {
+                resp.on('end', () => {
                     resolve(data);
                 });
             });
         })
-
     },
-    "post": async function (api, body, headers = {
-        'Content-Type': 'application/json',
-    }) {
+    "post": async function (api, body = {}, headers = {}) {
 
         if (!api) throw "Specify Endpoint";
-        if (!body) throw "Specify Body";
+
+        if (!headers["Content-Type"])
+            headers["Content-Type"] = "application/json";
 
         /* VARIABLES */
         const Query = api.split("/");
@@ -55,11 +63,11 @@ module.exports = {
             request.end();
         });
     },
-    "put": async function (api, body, headers = {
-        'Content-Type': 'application/json',
-    }) {
+    "put": async function (api, body = {}, headers = {}) {
         if (!api) throw "Specify Endpoint";
-        if (!body) throw "Specify Body";
+
+        if (!headers["Content-Type"])
+            headers["Content-Type"] = "application/json";
 
         /* VARIABLES */
         const Query = api.split("/");
@@ -89,11 +97,10 @@ module.exports = {
             req.end();
         })
     },
-    "delete": async function (api, body, headers = {
-        'Content-Type': 'application/json',
-    }) {
+    "delete": async function (api, body, headers = {}) {
         if (!api) throw "Specify Endpoint";
-        if (!body) throw "Specify Body";
+        if (!headers["Content-Type"])
+            headers["Content-Type"] = "application/json";
 
         /* VARIABLES */
         const Query = api.split("/");
