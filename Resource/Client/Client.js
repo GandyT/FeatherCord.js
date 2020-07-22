@@ -51,6 +51,9 @@ class Client {
 
         this["_" + event.toLowerCase()] = callback;
     }
+    get token() {
+        return this._Memory.get().token;
+    }
 }
 
 module.exports = Client;
