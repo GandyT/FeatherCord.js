@@ -1,13 +1,13 @@
-var datastore = {};
-
 class Memory {
-    constructor() { }
+    constructor() {
+        this.datastore = {};
+    }
     get() {
-        return datastore;
+        return this.datastore;
     }
     set(obj) {
         for (let [key, values] of Object.entries(obj))
-            datastore[key] = values;
+            this.datastore[key] = values;
     }
 }
 

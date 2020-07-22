@@ -1,43 +1,53 @@
-const http = require("http");
+const ws = require("ws");
+
+function HeartBeat(ms, socket, payload) {
+    if (!payload) socket.close();
+    var payload = {
+        op: 1,
+        d: 251
+    }
+
+    setTimeout(() => { socket.send(JSON.stringify(payload)) }, ms);
+}
 
 class WebSocket {
-    constructor(api, token) {
-        var Query = api.split("/");
-        var hostname = Query[2];
-
-        const server = http.createServer((req, res) => {
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end('okay');
+    constructor(api, token, client) {
+        this.socket = new ws(api);
+        this.socket.on("open", () => {
+            console.log("Connected");
         });
-        server.on("upgrade", (req, socket, head) => {
-            socket.write('HTTP/1.1 101 Web Socket Protocol Handshake\r\n' +
-                'Upgrade: WebSocket\r\n' +
-                'Connection: Upgrade\r\n' +
-                '\r\n');
+        this.socket.on("message", (data) => {
+            var payload = JSON.parse(data); ``
 
-            socket.pipe(socket); // echo back
-        });
-
-        server.listen(443, '127.0.0.1', () => {
-            // make a request
-            const options = {
-                port: 443,
-                host: hostname,
-                path: "/?v=6&encoding=json",
-                headers: {
-                    'Connection': 'Upgrade',
-                    'Upgrade': 'websocket'
+            if (payload.op == 10) {
+                // Hello OP Code. Send HeartBeat
+                HeartBeat(payload.d.heartbeat_interval, this.socket, payload);
+                // Send Identify Payload
+                var identify = {
+                    "op": 2,
+                    "d": {
+                        "token": token,
+                        "properties": {
+                            "$os": "windows",
+                            "$browser": "disco",
+                            "$device": "disco"
+                        }
+                    }
                 }
-            };
-            const req = http.request(options);
-            req.end();
+                this.socket.send(JSON.stringify(identify));
+                return;
+            }
+            if (payload.t == "READY") {
+                // Session Ready
+                client._Memory.set({ sessionid: payload.d.session_id });
+                return;
+            }
+            if (payload.op == 0) {
+                // Data
+                client._eventmanager.receive(payload);
+            }
 
-            req.on('upgrade', (res, socket, upgradeHead) => {
-                console.log('got upgraded!');
-                socket.end();
-                process.exit(0);
-            });
-        });
+        })
     }
 }
 

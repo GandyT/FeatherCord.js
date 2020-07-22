@@ -4,14 +4,19 @@ const FF = require("../Modules/FeatherFetch.js");
 const Config = require("../Modules/Config.js");
 const WebSocket = require("../Client/websocket/WebSocket.js");
 
+/* MANAGERS */
+const EventManager = require("../Managers/EventManager.js");
+
 /* CLASSES */
 const TextChannel = require("../Classes/TextChannel.js");
 
 class Client {
     constructor() {
         this.acctype = "bot";
-        this.Memory = new Memory;
+        this._Memory = new Memory();
         this.gateway = undefined;
+        this._message = undefined;
+        this._eventmanager = new EventManager(this);
     }
 
     // Get Channel by ID
@@ -27,17 +32,24 @@ class Client {
                 .then(res => {
                     var Response = JSON.parse(res);
                     if (!Response.bot) throw "Invalid Token";
-                    this.Memory.set({ token: token });
+                    this._Memory.set({ token: token });
 
                     FF.get(`${Config.APIEND}/gateway/bot`, { "authorization": `Bot ${token}` })
                         .then(res => {
                             var Response = JSON.parse(res);
-                            this.gateway = new WebSocket(Response.url, token);
+                            this.gateway = new WebSocket(Response.url, token, this);
                             resolve();
                         })
                 });
         });
 
+    }
+
+    on = async (event, callback) => {
+        if (!event) throw new Error("Specify an event");
+        if (typeof event !== "string") throw new Error("Event Must be a string");
+
+        this["_" + event.toLowerCase()] = callback;
     }
 }
 
