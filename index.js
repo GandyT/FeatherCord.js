@@ -2,6 +2,10 @@ const client = require("./Resource/Client/Client.js");
 
 const Client = new client();
 
+Client.on("ready", () => {
+    console.log("Bot is ready");
+})
+
 Client.on("message", (msg) => {
     var args = msg.content.split(" ");
     if (args[0] == "password")
