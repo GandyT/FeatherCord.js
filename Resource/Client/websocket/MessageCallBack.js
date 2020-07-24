@@ -54,12 +54,15 @@ function MessageCallBack(data) {
         }
         return;
     }
+
     if (payload.op == 0) {
+        if (payload.t == "GUILD_MEMBERS_CHUNK") {
+            return console.log(payload);
+        }
         // Data
         this.client._eventmanager.receive(payload);
         return;
     }
-
 }
 
 module.exports = MessageCallBack;

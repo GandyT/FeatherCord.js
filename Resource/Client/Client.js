@@ -1,11 +1,14 @@
 /* INTERNAL MODULES */
+const FF = require("../Modules/FeatherFetch.js");
 const Memory = require("../Modules/Memory.js");
+const Config = require("../Modules/Config.js");
 
 /* MANAGERS */
 const EventManager = require("../Managers/EventManager.js");
 
 /* CLASSES */
 const TextChannel = require("../Classes/TextChannel.js");
+const Guild = require("../Classes/Guild.js");
 
 /* OPERATIONS */
 const Login = require("./Operations/ClientLogin.js");
@@ -18,6 +21,7 @@ class Client {
         this._Memory = new Memory();
         this._gateway = undefined;
         this._loggedin = false;
+        this._data;
 
         /* CLIENT ACTIONS */
         this.login = Login.bind(this);
@@ -42,7 +46,11 @@ class Client {
 
     /* DISCORD RELATED ACTIONS */
     getChannel(id) {
-        return new TextChannel(this, id);
+        return new TextChannel(this, String(id));
+    }
+
+    getGuild(id) {
+        return new Guild(this, String(id));
     }
 }
 

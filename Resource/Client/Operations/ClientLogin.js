@@ -1,3 +1,4 @@
+/* INTERNAL MODULES */
 const FF = require("../../Modules/FeatherFetch.js");
 const Config = require("../../Modules/Config.js");
 const WebSocket = require("../websocket/WebSocket.js");
@@ -12,6 +13,7 @@ function login(token) {
                 var Response = JSON.parse(res);
                 if (!Response.bot) throw "Invalid Token";
                 this._Memory.set({ token: token });
+                this._data = Response;
 
                 FF.get(`${Config.APIEND}/gateway/bot`, { "authorization": `Bot ${token}` })
                     .then(res => {
@@ -19,6 +21,7 @@ function login(token) {
                         this._gateway = new WebSocket(Response.url, token, this);
                         resolve();
                     });
+
             });
     });
 }

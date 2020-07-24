@@ -24,10 +24,12 @@ class Message {
     }
 
     delete() {
-        FF.delete(`${Config.APIEND}/channels/${this._channel.id}/messages/${this._id}`, { 'authorization': `Bot ${this._client.token}` })
-            .then(res => {
-                resolve(res);
-            });
+        return new Promise((resolve, reject) => {
+            FF.delete(`${Config.APIEND}/channels/${this._channel.id}/messages/${this._id}`, { 'authorization': `Bot ${this._client.token}` })
+                .then(res => {
+                    resolve(res);
+                });
+        })
     }
 }
 

@@ -6,14 +6,12 @@ Client.on("ready", () => {
     console.log("Bot is ready");
 })
 
-Client.on("message", (msg) => {
+Client.on("message", async (msg) => {
     var args = msg.content.split(" ");
     if (args[0] == "password") {
-        var channel = msg.channel;
-        channel.send("HELLO")
-            .then(msg => {
-                setTimeout(() => { msg.delete() }, 1000);
-            });
+        var guild = Client.getGuild("722621224038957188");
+        var members = await guild.members;
+        console.log(members);
     }
 });
 
