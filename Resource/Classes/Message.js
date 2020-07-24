@@ -1,5 +1,10 @@
+/* INTERNAL MODULES */
+const FF = require("../Modules/FeatherFetch.js");
+const Config = require("../Modules/Config.js");
+
 class Message {
     constructor(client, data, author, channel) {
+        this._client = client;
         this._content = data.content;
         this._channel = channel;
         this._id = data.id;
@@ -16,6 +21,13 @@ class Message {
     }
     get author() {
         return this._author;
+    }
+
+    delete() {
+        FF.delete(`${Config.APIEND}/channels/${this._channel.id}/messages/${this._id}`, { 'authorization': `Bot ${this._client.token}` })
+            .then(res => {
+                resolve(res);
+            });
     }
 }
 

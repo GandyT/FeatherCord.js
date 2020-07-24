@@ -12,8 +12,9 @@ class Author {
         this._flags = author.public_flags;
         this._id = author.id;
         this._tag = `${author.username}#${author.discriminator}`;
-        this._avatarURL = `${Config.AVATARURL}/${this._id}/${author.avatar}`;
+        this._avatarURL = author.avatar ? `${Config.AVATARURL}/${this._id}/${author.avatar}` : "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png";
         this._client = client;
+        this._bot = author.bot;
     }
 
     /* GETTERS */

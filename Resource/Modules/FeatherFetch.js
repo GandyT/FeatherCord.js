@@ -79,7 +79,7 @@ module.exports = {
         var options = {
             hostname: hostname,
             port: port,
-            path: path,
+            path: "/" + path,
             method: "PUT",
             headers: headers,
         }
@@ -97,7 +97,7 @@ module.exports = {
             req.end();
         })
     },
-    "delete": async function (api, body, headers = {}) {
+    "delete": async function (api, headers = {}) {
         if (!api) throw "Specify Endpoint";
         if (!headers["Content-Type"])
             headers["Content-Type"] = "application/json";
@@ -112,23 +112,23 @@ module.exports = {
         var options = {
             hostname: hostname,
             port: port,
-            path: path,
+            path: "/" + path,
             method: "DELETE",
             headers: headers,
         }
+
         return new Promise((resolve, reject) => {
             const req = https.request(options, (resp) => {
                 var data = "";
-
                 resp.on('data', (chunk) => {
                     data += chunk;
                 });
                 resp.on('end', () => {
-                    resolve(data);
+                    resolve(data ? { error: "Message Delete Fail", success: false } : { error: "", success: true });
                 });
+
             });
-            req.write(JSON.stringify(body));
-            req.end();
+            req.end()
         })
     }
 }
