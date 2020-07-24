@@ -14,6 +14,7 @@ Client.on("message", (msg) => {
                 console.log(msg);
             })
 });
+Client.emit("hello", 1, 2, 3);
 
 Client.login("NzM0ODcyMjMzNDQ4ODMzMDU0.Xxi3Og.e2MAlb7t5nvClUz33bs_YtWMHjQ");
 

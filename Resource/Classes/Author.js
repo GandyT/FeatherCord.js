@@ -1,27 +1,33 @@
 /* INTERNAL MODULES */
-const FF = require("../Modules/FeatherFetch.js");
-const Config = require("../Modules/Config.js");
+const config = require("../Modules/Config.js");
 
-class TextChannel {
-    constructor(Client, id) {
-        this._id = id;
-        this._default = {};
-        this._client = Client;
-        FF.get(`${Config.APIEND}/channels/${id}`, { "authorization": `Bot ${Client._Memory.get().token}` })
-            .then(res => {
-                this._default = JSON.parse(res);
-            });
+class Author {
+    constructor(client, author) {
+        this._username = author.username;
+        this._flags = author.public_flags;
+        this._id = author.id;
+        this._tag = `${author.username}#${author.discriminator}`;
+        this._avatarURL = `${config.AVATARURL}/${this._id}/${author.avatar}`;
+        this._client = client;
     }
+
     /* GETTERS */
+    get username() {
+        return this._username;
+    }
+    get flags() {
+        return this._flags;
+    }
     get id() {
         return this._id;
     }
-    get name() {
-        FF.get(`${config.APIEND}/channels/${this._id}`)
-            .then(res => {
-                console.log(res);
-            });
+    get tag() {
+        return this._tag;
     }
+    get avatarURL() {
+        return this._avatarURL;
+    }
+
     /* ACTIONS */
     send(content) {
         return new Promise((resolve, reject) => {
@@ -60,4 +66,4 @@ class TextChannel {
     // Next Action Here
 }
 
-module.exports = TextChannel;
+module.exports = Author;
