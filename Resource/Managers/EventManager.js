@@ -9,6 +9,7 @@ class EventManager {
     receive(payload) {
         switch (payload.t) {
             case "MESSAGE_CREATE":
+            case "MESSAGE_DELETE":
                 MessageManager.receive(this.client, payload);
                 break;
             case "READY":

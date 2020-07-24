@@ -1,6 +1,8 @@
 /* INTERNAL MODULES */
 const FF = require("../Modules/FeatherFetch.js");
 const Config = require("../Modules/Config.js");
+/* STRUCTURES */
+const Message = require("./Message.js");
 
 class TextChannel {
     constructor(Client, id) {
@@ -17,10 +19,7 @@ class TextChannel {
         return this._id;
     }
     get name() {
-        FF.get(`${config.APIEND}/channels/${this._id}`)
-            .then(res => {
-                console.log(res);
-            });
+        return this._default.name;
     }
     /* ACTIONS */
     send(content) {
@@ -43,7 +42,7 @@ class TextChannel {
                     .then(res => {
                         var Response = JSON.parse(res);
                         if (Response.message) throw new Error(Response.message);
-                        resolve(Response);
+                        resolve(new Message(this._client, Response, null, this));
                     });
                 // Regular Message
             } else {
@@ -51,7 +50,7 @@ class TextChannel {
                     .then(res => {
                         var Response = JSON.parse(res);
                         if (Response.message) throw new Error(Response.message);
-                        resolve(Response);
+                        resolve(new Message(this._client, Response, null, this));
                     });
                 // Embed
             }

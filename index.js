@@ -8,13 +8,13 @@ Client.on("ready", () => {
 
 Client.on("message", (msg) => {
     var args = msg.content.split(" ");
-    if (args[0] == "password")
-        msg.channel.send({ embed: { title: 'First Embed Test', description: 'HELLOOO', } })
-            .then(message => {
-                console.log(msg);
-            })
+    if (args[0] == "password") {
+        var channel = Client.getChannel("722622021791645789");
+        channel.send("Test");
+    }
 });
-Client.emit("hello", 1, 2, 3);
+
+var channel = await Client.channels.find(c => c.id == "722622021791645789");
 
 Client.login("NzM0ODcyMjMzNDQ4ODMzMDU0.Xxi3Og.e2MAlb7t5nvClUz33bs_YtWMHjQ");
 

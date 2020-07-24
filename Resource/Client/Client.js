@@ -27,9 +27,12 @@ class Client {
         /* MANAGERS */
         this._eventmanager = new EventManager(this);
 
-        /* ACTIONS */
-        this._message = undefined;
-        this._ready = undefined;
+        /* 
+        __EVENTS__
+        _message
+        _ready
+        _messagedelete
+        */
     }
 
     /* BASE CLIENT */
