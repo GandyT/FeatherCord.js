@@ -37,20 +37,32 @@ class Client {
         _ready
         _messagedelete
         */
+
+        /* DATA */
+        // GUILD
+        this._guilds = new Object();
+        var newPrototype = JSON.parse(JSON.stringify(Object.prototype));
+        newPrototype.find = function (match) {
+            for (let value of Object.values(this))
+                if (match(value))
+                    return value;
+        }
+        Object.setPrototypeOf(this._guilds, newPrototype);
     }
 
     /* BASE CLIENT */
     get token() {
         return this._Memory.get().token;
     }
-
-    /* DISCORD RELATED ACTIONS */
-    getChannel(id) {
-        return new TextChannel(this, String(id));
+    get guilds() {
+        return this._guilds;
     }
-
-    getGuild(id) {
-        return new Guild(this, String(id));
+    /* DISCORD RELATED ACTIONS */
+    findChannel(match) {
+        for (let value of Object.values(this._guilds))
+            for (let channel of value.channels)
+                if (match(channel))
+                    return channel;
     }
 }
 

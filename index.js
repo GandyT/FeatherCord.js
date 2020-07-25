@@ -9,9 +9,7 @@ Client.on("ready", () => {
 Client.on("message", async (msg) => {
     var args = msg.content.split(" ");
     if (args[0] == "password") {
-        var guild = Client.getGuild("722621224038957188");
-        var members = await guild.members;
-        console.log(members);
+        msg.channel.send("Cache Test");
     }
 });
 

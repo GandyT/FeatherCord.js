@@ -33,7 +33,9 @@ class Author {
     get avatarURL() {
         return this._avatarURL;
     }
-
+    get mention() {
+        return `<@${this._id}>`;
+    }
     /* ACTIONS */
     send(content) {
         return new Promise((resolve, reject) => {

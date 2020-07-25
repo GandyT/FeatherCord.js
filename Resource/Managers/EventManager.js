@@ -1,4 +1,5 @@
 /* MANAGERS */
+const Ready = require("./Ready.js");
 const MessageManager = require("./MessageManger.js");
 
 class EventManager {
@@ -15,6 +16,7 @@ class EventManager {
             case "READY":
                 if (this.client._ready && !this.client._loggedin) {
                     this.client._loggedin = true;
+                    Ready(this.client);
                     this.client._ready();
                 }
                 break;

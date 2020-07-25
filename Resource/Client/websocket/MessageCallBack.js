@@ -57,7 +57,7 @@ function MessageCallBack(data) {
 
     if (payload.op == 0) {
         if (payload.t == "GUILD_MEMBERS_CHUNK") {
-            return console.log(payload);
+            return this.client.emit(`${payload.d.guild_id}-members`, payload.d.members);
         }
         // Data
         this.client._eventmanager.receive(payload);

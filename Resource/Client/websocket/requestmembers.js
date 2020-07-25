@@ -1,4 +1,5 @@
-function requestmembers(socket, id) {
+function requestmembers(client, id) {
+    const socket = client._gateway.socket;
     var payload = {
         "op": 8,
         "d": {
@@ -7,7 +8,9 @@ function requestmembers(socket, id) {
             "limit": 0
         }
     }
-
+    client.on(`${id}-members`, (memberchunk) => {
+        client._guilds[id].members.concat(memberchunk);
+    });
     socket.send(JSON.stringify(payload));
 }
 

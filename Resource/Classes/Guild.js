@@ -18,6 +18,10 @@ class Guild {
                 const Response = JSON.parse(res);
                 this._data = Response;
             });
+        this._members = [];
+        this._client.on(`${id}-members`, (members) => {
+
+        })
     }
     /* GETTERS */
     get id() {
@@ -46,7 +50,7 @@ class Guild {
         return new Promise((resolve, reject) => {
             this._client.on("sendmembers", (members) => {
                 resolve(members);
-            })
+            });
         })
     }
 }

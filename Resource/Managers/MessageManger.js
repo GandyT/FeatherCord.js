@@ -9,14 +9,15 @@ module.exports = {
         const data = payload.d;
         const Event = payload.t;
 
-        if (Event == "MESSAGE_DELETE")
+        if (Event == "MESSAGE_DELETE") {
             return client.emit("messagedelete", {
                 id: data.id,
-                channel: new TextChannel(client, data.channel_id),
+                channel: new TextChannel(client, client.findChannel(c => c.id == data.channel_id)),
             })
+        }
 
         var author = new Author(client, data.author);
-        var channel = new TextChannel(client, data.channel_id);
+        var channel = new TextChannel(client, client.findChannel(c => c.id == data.channel_id));
         var SentMessage = new Message(client, data, author, channel);
 
         /* MORE EVENT MANAGEMENT */
