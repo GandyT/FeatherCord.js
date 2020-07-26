@@ -26,6 +26,9 @@ class TextChannel {
     get nsfw() {
         return this._default.nsfw;
     }
+    get dm() {
+        return false;
+    }
     get guild() {
         return this._client.guilds.find(guild => guild.id == this._default.guild_id);
     }

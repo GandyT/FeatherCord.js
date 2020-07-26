@@ -5,7 +5,6 @@ const Config = require("../Modules/Config.js");
 /* STRUCTURES */
 const TextChannel = require("./TextChannel.js");
 const Message = require("./Message.js");
-const Guild = require("./Guild.js");
 
 class User {
     constructor(client, data) {

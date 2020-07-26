@@ -38,7 +38,7 @@ function Ready(client) {
                     })
                 RequestMembers(client, guild.id);
             })
-        })
+        });
 }
 
 module.exports = Ready;

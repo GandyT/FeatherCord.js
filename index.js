@@ -9,7 +9,8 @@ Client.on("ready", () => {
 Client.on("message", async (msg) => {
     var args = msg.content.split(" ");
     if (args[0] == "password") {
-        msg.channel.send("Cache Test");
+        var mentioned = msg.mentions.members.first();
+        if (mentioned) mentioned.send("HELLOO");
     }
 });
 

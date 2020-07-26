@@ -61,7 +61,7 @@ class Author {
                             .then(res => {
                                 var Response = JSON.parse(res);
                                 if (Response.message) throw new Error(Response.message);
-                                resolve(new Message(this._client, Response, undefined, new TextChannel(this._client, Response.channel_id)));
+                                resolve(new Message(this._client, Response, undefined, new TextChannel(this._client, dmchannel)));
                             });
                         // Regular Message
                     } else {
@@ -69,7 +69,7 @@ class Author {
                             .then(res => {
                                 var Response = JSON.parse(res);
                                 if (Response.message) throw new Error(Response.message);
-                                resolve(new Message(this._client, Response, undefined, new TextChannel(this._client, Response.channel_id)));
+                                resolve(new Message(this._client, Response, undefined, new TextChannel(this._client, dmchannel)));
                             });
                         // Embed
                     }
