@@ -9,7 +9,7 @@ function requestmembers(client, id) {
         }
     }
     client.on(`${id}-members`, (memberchunk) => {
-        client._guilds[id].members.concat(memberchunk);
+        client._guilds[id]._data._members.concat(memberchunk);
     });
     socket.send(JSON.stringify(payload));
 }

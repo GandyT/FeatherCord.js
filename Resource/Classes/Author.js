@@ -36,6 +36,9 @@ class Author {
     get mention() {
         return `<@${this._id}>`;
     }
+    get bot() {
+        return this._bot;
+    }
     /* ACTIONS */
     send(content) {
         return new Promise((resolve, reject) => {

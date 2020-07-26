@@ -1,5 +1,4 @@
 /* STRUCTURES */
-const Member = require("./Member.js");
 const User = require("./User.js");
 
 class MemberArr {

@@ -95,6 +95,23 @@ class TextChannel {
                 });
         })
     }
+    delete() {
+        return new Promise((resolve, reject) => {
+            FF.delete(`${Config.APIEND}/channels/${this.id}`, { 'authorization': `Bot ${this._client.token}` })
+                .then(res => {
+                    if (res) {
+                        try {
+                            var Response = JSON.parse(res);
+                            if (Response.retry_after) {
+                                return setTimeout(() => this.fetchMessage(id), Response.retry_after);
+                            }
+                            if (Response.message) throw new Error(Response.message);
+                        } catch { }
+                    }
+                    resolve();
+                });
+        });
+    }
 }
 
 module.exports = TextChannel;

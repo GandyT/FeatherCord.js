@@ -201,9 +201,12 @@ class TextChannel {
                 .then(res => {
                     if (!res) throw new Error("Could not connect to server");
                     const Response = JSON.parse(res);
+                    if (Response.retry_after) {
+                        return setTimeout(() => this.fetchMessage(id), Response.retry_after);
+                    }
                     if (Response.message) throw new Error(Response.message);
 
-                    console.log(Response);
+                    resolve(Response);
                 });
         })
     }

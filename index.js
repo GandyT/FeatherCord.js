@@ -2,17 +2,15 @@ const Client = require("./Resource/client/client.js");
 
 const client = new Client();
 
-client.on("ready", () => {
+client.on("ready", async () => {
     console.log("Bot is ready");
 })
 
 client.on("message", async (msg) => {
     var args = msg.content.split(" ");
-    msg.react("✅");
-});
-
-client.on("reactionadd", async (reaction) => {
-    setTimeout(() => { reaction.delete() }, 1000);
+    var channel = msg.channel;
+    if (msg.author.bot) return;
+    console.log(channel.id);
 });
 
 client.login("NzM0ODcyMjMzNDQ4ODMzMDU0.Xxi3Og.e2MAlb7t5nvClUz33bs_YtWMHjQ");
