@@ -130,5 +130,39 @@ module.exports = {
             });
             req.end()
         })
-    }
+    },
+    "patch": async function (api, body = {}, headers = {}) {
+        if (!api) throw "Specify Endpoint";
+
+        if (!headers["Content-Type"])
+            headers["Content-Type"] = "application/json";
+
+        /* VARIABLES */
+        const Query = api.split("/");
+        const hostname = Query.slice(2, 3)[0];
+        const path = Query.slice(3).join("/");
+        var port = 80;
+        if (api.indexOf("https") != -1) port = 443;
+
+        var options = {
+            hostname: hostname,
+            port: port,
+            path: "/" + path,
+            method: "PATCH",
+            headers: headers,
+        }
+        return new Promise((resolve, reject) => {
+            const req = https.request(options, (resp) => {
+                var data = "";
+                resp.on('data', (chunk) => {
+                    data += chunk;
+                });
+                resp.on('end', () => {
+                    resolve(data);
+                })
+            });
+            req.write(JSON.stringify(body));
+            req.end();
+        })
+    },
 }

@@ -9,13 +9,10 @@ Client.on("ready", () => {
 Client.on("message", async (msg) => {
     var args = msg.content.split(" ");
     if (args[0] == "password") {
-        msg.channel.send("HELLO")
-            .then(res => {
-                res.react("✔️")
-                    .then(reaction => {
-                        setTimeout(() => { reaction.delete(); msg.channel.send("Reaction Deleted") }, 3000);
-                    });
-            });
+        msg.channel.send("Editing SOon")
+            .then(message => {
+                message.edit("HELLOOO");
+            })
     }
 });
 

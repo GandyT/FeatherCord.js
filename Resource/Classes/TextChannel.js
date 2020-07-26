@@ -74,16 +74,90 @@ class TextChannel {
     // Next Action Here
     fetchMessage(id) {
         return new Promise((resolve, reject) => {
-            FF.get(`${Config.APIEND}/channels/${this._id}/messages/${id}`, { "authorization": `Bot ${this._client.token}` })
+            FF.get(`${Config.APIEND}/channels/${this.id}/messages/${id}`, { "authorization": `Bot ${this._client.token}` })
                 .then(res => {
                     if (!res) throw new Error("Could not connect to server");
                     const Response = JSON.parse(res);
                     if (Response.message) throw new Error(Response.message);
 
-                    console.log(Response);
+                    resolve(new Message(this._client, Response, new Author(this._client, Response.author), this));
                 });
         })
     }
 }
 
 module.exports = TextChannel;
+
+/* HAH CIRCULAR DEPENDENCY WORKAROUND (AM DUMB) */
+class Author {
+    constructor(client, author) {
+        this._username = author.username;
+        this._flags = author.public_flags;
+        this._id = author.id;
+        this._tag = `${author.username}#${author.discriminator}`;
+        this._avatarURL = author.avatar ? `${Config.AVATARURL}/${this._id}/${author.avatar}` : "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png";
+        this._client = client;
+        this._bot = author.bot;
+    }
+
+    /* GETTERS */
+    get username() {
+        return this._username;
+    }
+    get flags() {
+        return this._flags;
+    }
+    get id() {
+        return this._id;
+    }
+    get tag() {
+        return this._tag;
+    }
+    get avatarURL() {
+        return this._avatarURL;
+    }
+    get mention() {
+        return `<@${this._id}>`;
+    }
+    /* ACTIONS */
+    send(content) {
+        return new Promise((resolve, reject) => {
+            FF.post(`${Config.APIEND}/users/@me/channels`, { recipient_id: this._id }, { authorization: `Bot ${this._client.token}` })
+                .then(dmchannel => {
+                    dmchannel = JSON.parse(dmchannel);
+
+                    if (!content) throw "Specify Message Content";
+                    var headers = {
+                        authorization: `Bot ${this._client.token}`
+                    }
+                    if (!content.embed) {
+                        content = String(content);
+                        if (content.length > 2000) throw new Error("2000 character limit for text messages");
+                        var body = {
+                            content: content,
+                            tts: false,
+                            embed: {},
+                        }
+
+
+                        FF.post(`${Config.APIEND}/channels/${dmchannel.id}/messages`, body, headers)
+                            .then(res => {
+                                var Response = JSON.parse(res);
+                                if (Response.message) throw new Error(Response.message);
+                                resolve(new Message(this._client, Response, undefined, new TextChannel(this._client, dmchannel)));
+                            });
+                        // Regular Message
+                    } else {
+                        FF.post(`${Config.APIEND}/channels/${dmchannel.id}/messages`, content, headers)
+                            .then(res => {
+                                var Response = JSON.parse(res);
+                                if (Response.message) throw new Error(Response.message);
+                                resolve(new Message(this._client, Response, undefined, new TextChannel(this._client, dmchannel)));
+                            });
+                        // Embed
+                    }
+                })
+        })
+    }
+    // Next Action Here
+}

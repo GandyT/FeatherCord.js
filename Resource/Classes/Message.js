@@ -63,6 +63,40 @@ class Message {
                 });
         })
     }
+    edit(content) {
+        return new Promise((resolve, reject) => {
+            if (!content) throw "Specify Message Content";
+            var headers = {
+                authorization: `Bot ${this._client.token}`
+            }
+            if (!content.embed) {
+                content = String(content);
+                if (content.length > 2000) throw new Error("2000 character limit for text messages");
+                var body = {
+                    content: content,
+                    embed: {},
+                }
+
+
+                FF.patch(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}`, body, headers)
+                    .then(res => {
+                        var Response = JSON.parse(res);
+                        if (Response.message) throw new Error(Response.message);
+                        resolve(new Message(this._client, Response, null, this));
+                    });
+                // Regular Message
+            } else {
+                FF.patch(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}`, content, headers)
+                    .then(res => {
+                        var Response = JSON.parse(res);
+                        if (Response.message) throw new Error(Response.message);
+
+                        resolve(new Message(this._client, Response, null, this));
+                    });
+                // Embed
+            }
+        })
+    }
 }
 
 module.exports = Message;
