@@ -2,12 +2,6 @@
 const FF = require("../Modules/FeatherFetch.js");
 const Config = require("../Modules/Config.js");
 
-/* STRUCTURES */
-const Member = require('./Member.js');
-
-/* OPERATIONS */
-const RequestMembers = require("../Client/websocket/requestmembers.js");
-
 class Guild {
     constructor(client, id) {
         this._client = client;
@@ -46,7 +40,6 @@ class Guild {
         return this._data.emojis;
     }
     get members() {
-        RequestMembers(this._client._gateway.socket, this._id);
         return new Promise((resolve, reject) => {
             this._client.on("sendmembers", (members) => {
                 resolve(members);

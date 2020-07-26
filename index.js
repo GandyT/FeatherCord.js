@@ -9,10 +9,7 @@ Client.on("ready", () => {
 Client.on("message", async (msg) => {
     var args = msg.content.split(" ");
     if (args[0] == "password") {
-        msg.channel.send("Editing SOon")
-            .then(message => {
-                message.edit("HELLOOO");
-            })
+        msg.channel.send("Editing SOon");
     }
 });
 

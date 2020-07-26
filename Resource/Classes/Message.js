@@ -48,9 +48,9 @@ class Message {
     }
     delete() {
         return new Promise((resolve, reject) => {
-            FF.delete(`${Config.APIEND}/channels/${this._channel.id}/messages/${this._id}`, { 'authorization': `Bot ${this._client.token}` })
-                .then(res => {
-                    resolve(JSON.parse(res));
+            FF.delete(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}`, { 'authorization': `Bot ${this._client.token}` })
+                .then(() => {
+                    resolve();
                 });
         })
     }
@@ -79,19 +79,14 @@ class Message {
 
 
                 FF.patch(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}`, body, headers)
-                    .then(res => {
-                        var Response = JSON.parse(res);
-                        if (Response.message) throw new Error(Response.message);
-                        resolve(new Message(this._client, Response, null, this));
+                    .then(() => {
+                        resolve(this);
                     });
                 // Regular Message
             } else {
                 FF.patch(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}`, content, headers)
-                    .then(res => {
-                        var Response = JSON.parse(res);
-                        if (Response.message) throw new Error(Response.message);
-
-                        resolve(new Message(this._client, Response, null, this));
+                    .then(() => {
+                        resolve(this);
                     });
                 // Embed
             }

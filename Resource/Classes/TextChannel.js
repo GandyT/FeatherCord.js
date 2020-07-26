@@ -55,6 +55,10 @@ class TextChannel {
                 FF.post(`${Config.APIEND}/channels/${this._default.id}/messages`, body, headers)
                     .then(res => {
                         var Response = JSON.parse(res);
+                        if (Response.retry_after) {
+                            // Rate Limited
+                            return setTimeout(() => this.send(content), Response.retry_after);
+                        }
                         if (Response.message) throw new Error(Response.message);
                         resolve(new Message(this._client, Response, null, this));
                     });
@@ -63,6 +67,10 @@ class TextChannel {
                 FF.post(`${Config.APIEND}/channels/${this._default.id}/messages`, content, headers)
                     .then(res => {
                         var Response = JSON.parse(res);
+                        if (Response.retry_after) {
+                            // Rate Limited
+                            return setTimeout(() => this.send(content), Response.retry_after);
+                        }
                         if (Response.message) throw new Error(Response.message);
 
                         resolve(new Message(this._client, Response, null, this));
@@ -78,6 +86,9 @@ class TextChannel {
                 .then(res => {
                     if (!res) throw new Error("Could not connect to server");
                     const Response = JSON.parse(res);
+                    if (Response.retry_after) {
+                        return setTimeout(() => this.fetchMessage(id), Response.retry_after);
+                    }
                     if (Response.message) throw new Error(Response.message);
 
                     resolve(new Message(this._client, Response, new Author(this._client, Response.author), this));

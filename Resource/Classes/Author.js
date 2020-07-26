@@ -60,6 +60,10 @@ class Author {
                         FF.post(`${Config.APIEND}/channels/${dmchannel.id}/messages`, body, headers)
                             .then(res => {
                                 var Response = JSON.parse(res);
+                                if (Response.retry_after) {
+                                    // Rate Limited
+                                    return setTimeout(() => this.send(content), Response.retry_after);
+                                }
                                 if (Response.message) throw new Error(Response.message);
                                 resolve(new Message(this._client, Response, undefined, new TextChannel(this._client, dmchannel)));
                             });
@@ -68,6 +72,10 @@ class Author {
                         FF.post(`${Config.APIEND}/channels/${dmchannel.id}/messages`, content, headers)
                             .then(res => {
                                 var Response = JSON.parse(res);
+                                if (Response.retry_after) {
+                                    // Rate Limited
+                                    return setTimeout(() => this.send(content), Response.retry_after);
+                                }
                                 if (Response.message) throw new Error(Response.message);
                                 resolve(new Message(this._client, Response, undefined, new TextChannel(this._client, dmchannel)));
                             });
