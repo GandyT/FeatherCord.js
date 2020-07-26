@@ -3,19 +3,10 @@ const FF = require("../Modules/FeatherFetch.js");
 const Config = require("../Modules/Config.js");
 
 class Guild {
-    constructor(client, id) {
+    constructor(client, id, data) {
         this._client = client;
         this._id = id;
-        this._data = {};
-        FF.get(`${Config.APIEND}/guilds/${id}`, { "authorization": `Bot ${client.token}` })
-            .then(res => {
-                const Response = JSON.parse(res);
-                this._data = Response;
-            });
-        this._members = [];
-        this._client.on(`${id}-members`, (members) => {
-
-        })
+        this._data = data;
     }
     /* GETTERS */
     get id() {
@@ -40,11 +31,10 @@ class Guild {
         return this._data.emojis;
     }
     get members() {
-        return new Promise((resolve, reject) => {
-            this._client.on("sendmembers", (members) => {
-                resolve(members);
-            });
-        })
+        return this._data.members;
+    }
+    get channels() {
+        return this._data.channels;
     }
 }
 

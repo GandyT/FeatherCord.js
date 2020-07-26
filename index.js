@@ -1,19 +1,21 @@
-const client = require("./Resource/Client/Client.js");
+const Client = require("./Resource/client/client.js");
 
-const Client = new client();
+const client = new Client();
 
-Client.on("ready", () => {
+client.on("ready", () => {
     console.log("Bot is ready");
 })
 
-Client.on("message", async (msg) => {
+client.on("message", async (msg) => {
     var args = msg.content.split(" ");
-    if (args[0] == "password") {
-        msg.channel.send("Editing SOon");
-    }
+    msg.react("✅");
 });
 
-Client.login("NzM0ODcyMjMzNDQ4ODMzMDU0.Xxi3Og.e2MAlb7t5nvClUz33bs_YtWMHjQ");
+client.on("reactionadd", async (reaction) => {
+    setTimeout(() => { reaction.delete() }, 1000);
+});
+
+client.login("NzM0ODcyMjMzNDQ4ODMzMDU0.Xxi3Og.e2MAlb7t5nvClUz33bs_YtWMHjQ");
 
 
 

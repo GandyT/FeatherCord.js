@@ -10,20 +10,23 @@ class Message {
         this._client = client;
         this._channel = channel;
         this._author = author;
-        this._data.mentions.map((mention, index) => {
-            this._data.mentions[index] = new User(client, mention);
-        });
 
-        /* ARRAY PROTOTYPE */
-        var ArrayPrototype = JSON.parse(JSON.stringify(Array.prototype));
-        ArrayPrototype.first = function () {
-            return this[0];
+        if (this._data.mentions) {
+            this._data.mentions.map((mention, index) => {
+                this._data.mentions[index] = new User(client, mention);
+            });
+
+            /* ARRAY PROTOTYPE */
+            var ArrayPrototype = JSON.parse(JSON.stringify(Array.prototype));
+            ArrayPrototype.first = function () {
+                return this[0];
+            }
+            ArrayPrototype.last = function () {
+                return this[this.length - 1];
+            }
+            Object.setPrototypeOf(this._data.mentions, ArrayPrototype);
+            Object.setPrototypeOf(this._data.mention_roles, ArrayPrototype);
         }
-        ArrayPrototype.last = function () {
-            return this[this.length - 1];
-        }
-        Object.setPrototypeOf(this._data.mentions, ArrayPrototype);
-        Object.setPrototypeOf(this._data.mention_roles, ArrayPrototype);
     }
     get content() {
         return this._data.content;
@@ -32,7 +35,7 @@ class Message {
         return this._channel;
     }
     get id() {
-        return this._data.id;
+        return this._data.id || this._data.message_id;
     }
     get author() {
         return this._author;
@@ -41,15 +44,22 @@ class Message {
         return this._data.embeds;
     }
     get mentions() {
-        return {
-            members: this._data.mentions,
-            roles: this._data.mention_roles,
-        }
+        if (this._data.mentions)
+            return {
+                members: this._data.mentions,
+                roles: this._data.mention_roles,
+            }
     }
     delete() {
         return new Promise((resolve, reject) => {
             FF.delete(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}`, { 'authorization': `Bot ${this._client.token}` })
-                .then(() => {
+                .then((res) => {
+                    if (res) {
+                        var Response = JSON.parse(res);
+                        if (Response.retry_after) {
+                            return setTimeout(() => this.react(emoji), Response.retry_after);
+                        }
+                    }
                     resolve();
                 });
         })
@@ -58,10 +68,16 @@ class Message {
         var encoded = encodeURI(emoji);
         return new Promise((resolve, reject) => {
             FF.put(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}/reactions/${encoded}/@me`, {}, { "authorization": `Bot ${this._client.token}` })
-                .then(() => {
-                    resolve(new Reaction(this, encoded, this._client.id, this._client));
+                .then((res) => {
+                    if (res) {
+                        var Response = JSON.parse(res);
+                        if (Response.retry_after) {
+                            return setTimeout(() => this.react(emoji), Response.retry_after);
+                        }
+                    }
+                    resolve(new Reaction(this._client, { name: emoji }, this));
                 });
-        })
+        });
     }
     edit(content) {
         return new Promise((resolve, reject) => {
@@ -79,13 +95,25 @@ class Message {
 
 
                 FF.patch(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}`, body, headers)
-                    .then(() => {
+                    .then((res) => {
+                        if (res) {
+                            var Response = JSON.parse(res);
+                            if (Response.retry_after) {
+                                return setTimeout(() => this.edit(content), Response.retry_after);
+                            }
+                        }
                         resolve(this);
                     });
                 // Regular Message
             } else {
                 FF.patch(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}`, content, headers)
-                    .then(() => {
+                    .then((res) => {
+                        if (res) {
+                            var Response = JSON.parse(res);
+                            if (Response.retry_after) {
+                                return setTimeout(() => this.edit(content), Response.retry_after);
+                            }
+                        }
                         resolve(this);
                     });
                 // Embed

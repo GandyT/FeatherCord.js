@@ -3,6 +3,7 @@ const Message = require("../Classes/Message.js");
 const Author = require("../Classes/Author.js");
 const TextChannel = require("../Classes/TextChannel.js");
 const DMChannel = require("../Classes/DMChannel.js");
+const Reaction = require("../Classes/Reaction.js");
 
 /* INTERNAL MODULES */
 const FF = require("../Modules/FeatherFetch.js");
@@ -30,15 +31,16 @@ module.exports = {
 
         /* MORE EVENT MANAGEMENT */
         if (Event == "MESSAGE_CREATE") {
-            var author = new Author(client, data.author);
-            var SentMessage = new Message(client, data, author, channel);
+            let author = new Author(client, data.author);
+            let SentMessage = new Message(client, data, author, channel);
             return client.emit("message", SentMessage);
         }
         if (Event == "MESSAGE_DELETE") {
             return client.emit("messagedelete", { id: data.id, channel: channel });
         }
         if (Event == "MESSAGE_REACTION_ADD") {
-
+            let reactionMessage = new Message(client, data, new Author(client, data.member.user), channel);
+            return client.emit("reactionadd", new Reaction(client, { name: data.emoji.name }, reactionMessage));
         }
     }
 }
