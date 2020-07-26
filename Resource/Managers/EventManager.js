@@ -1,6 +1,7 @@
 /* MANAGERS */
 const Ready = require("./Ready.js");
 const MessageManager = require("./MessageManger.js");
+const ChannelManager = require("./ChannelManager.js");
 
 class EventManager {
     constructor(client) {
@@ -8,7 +9,6 @@ class EventManager {
     }
 
     receive(payload) {
-        console.log(payload.t);
         switch (payload.t) {
             case "MESSAGE_CREATE":
             case "MESSAGE_DELETE":
@@ -22,6 +22,7 @@ class EventManager {
                 break;
             case "CHANNEL_DELETE":
             case "CHANNEL_CREATE":
+                ChannelManager.receive(this.client, payload);
                 break;
         }
     }
