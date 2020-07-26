@@ -49,8 +49,14 @@ class Message {
         return new Promise((resolve, reject) => {
             FF.delete(`${Config.APIEND}/channels/${this._channel.id}/messages/${this._id}`, { 'authorization': `Bot ${this._client.token}` })
                 .then(res => {
-                    resolve(res);
+                    resolve(JSON.parse(res));
                 });
+        })
+    }
+    react(emoji) {
+        var encoded = encodeURI(emoji);
+        return new Promise((resolve, reject) => {
+            FF.put(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}/reactions/${encoded}/@me`, {}, { "authorization": `Bot ${this._client.token}` });
         })
     }
 }

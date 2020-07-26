@@ -3,7 +3,6 @@ const FF = require("../Modules/FeatherFetch.js");
 const Config = require("../Modules/Config.js");
 /* STRUCTURES */
 const Message = require("./Message.js");
-const Guild = require("./Guild.js");
 
 class TextChannel {
     constructor(Client, data) {

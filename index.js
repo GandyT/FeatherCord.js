@@ -9,8 +9,10 @@ Client.on("ready", () => {
 Client.on("message", async (msg) => {
     var args = msg.content.split(" ");
     if (args[0] == "password") {
-        var mentioned = msg.mentions.members.first();
-        if (mentioned) mentioned.send("HELLOO");
+        msg.channel.send("HELLO")
+            .then(res => {
+                res.react("✔️");
+            });
     }
 });
 

@@ -27,9 +27,8 @@ function Ready(client) {
                                 if (channel.parent_id) {
                                     var category = Categories.find(c => c.id == channel.parent_id)
                                     channel.category = category;
-                                    client._guilds[guild.id].channels.push(new TextChannel(client, channel));
                                 }
-
+                                client._guilds[guild.id].channels.push(new TextChannel(client, channel));
                             } else if (channel.type == 4) {
                                 // Category
                                 Categories.push(channel);
@@ -38,6 +37,10 @@ function Ready(client) {
                     })
                 RequestMembers(client, guild.id);
             })
+        })
+        .then(() => {
+            client._ready();
+            client._loggedin = true;
         });
 }
 

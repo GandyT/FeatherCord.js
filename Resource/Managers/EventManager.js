@@ -11,13 +11,12 @@ class EventManager {
         switch (payload.t) {
             case "MESSAGE_CREATE":
             case "MESSAGE_DELETE":
+            case "MESSAGE_REACTION_ADD":
                 MessageManager.receive(this.client, payload);
                 break;
             case "READY":
                 if (this.client._ready && !this.client._loggedin) {
-                    this.client._loggedin = true;
                     Ready(this.client);
-                    this.client._ready();
                 }
                 break;
         }

@@ -15,7 +15,7 @@ module.exports = {
         const Event = payload.t;
 
         /* VARIABLES */
-        var author = new Author(client, data.author);
+
         var channel;
         if (!data.guild_id) {
             await FF.get(`${Config.APIEND}/channels/${data.channel_id}`, { "authorization": `Bot ${client.token}`, 'recipient_id': data.author.id })
@@ -30,12 +30,15 @@ module.exports = {
 
         /* MORE EVENT MANAGEMENT */
         if (Event == "MESSAGE_CREATE") {
+            var author = new Author(client, data.author);
             var SentMessage = new Message(client, data, author, channel);
             return client.emit("message", SentMessage);
         }
         if (Event == "MESSAGE_DELETE") {
             return client.emit("messagedelete", { id: data.id, channel: channel });
         }
+        if (Event == "MESSAGE_REACTION_ADD") {
 
+        }
     }
 }
