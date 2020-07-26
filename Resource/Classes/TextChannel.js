@@ -108,6 +108,7 @@ class TextChannel {
                             if (Response.message) throw new Error(Response.message);
                         } catch { }
                     }
+                    this._client._guilds[this._default.guild_id]._data._channels = this._client._guilds[this._default.guild_id].channels.filter(c => c.id != this.id);
                     resolve();
                 });
         });
