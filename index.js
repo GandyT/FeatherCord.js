@@ -11,7 +11,10 @@ Client.on("message", async (msg) => {
     if (args[0] == "password") {
         msg.channel.send("HELLO")
             .then(res => {
-                res.react("✔️");
+                res.react("✔️")
+                    .then(reaction => {
+                        setTimeout(() => { reaction.delete(); msg.channel.send("Reaction Deleted") }, 3000);
+                    });
             });
     }
 });

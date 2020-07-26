@@ -1,6 +1,7 @@
 /* INTERNAL MODULES */
 const FF = require("../Modules/FeatherFetch.js");
 const Config = require("../Modules/Config.js");
+const Reaction = require("./Reaction.js");
 
 class Message {
     constructor(client, data, author, channel) {
@@ -56,7 +57,10 @@ class Message {
     react(emoji) {
         var encoded = encodeURI(emoji);
         return new Promise((resolve, reject) => {
-            FF.put(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}/reactions/${encoded}/@me`, {}, { "authorization": `Bot ${this._client.token}` });
+            FF.put(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}/reactions/${encoded}/@me`, {}, { "authorization": `Bot ${this._client.token}` })
+                .then(() => {
+                    resolve(new Reaction(this, encoded, this._client.id, this._client));
+                });
         })
     }
 }

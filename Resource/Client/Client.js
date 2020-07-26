@@ -57,6 +57,12 @@ class Client {
     get guilds() {
         return this._guilds;
     }
+    get id() {
+        return this._data.id;
+    }
+    get username() {
+        return this._data.username;
+    }
     /* DISCORD RELATED ACTIONS */
     findChannel(match) {
         for (let value of Object.values(this._guilds))
