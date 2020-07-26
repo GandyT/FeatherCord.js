@@ -35,7 +35,9 @@ function Ready(client) {
                                 // Category
                                 Categories.push(channel);
                             }
-                        })
+                        });
+
+                        client._guilds[guild.id]._categories = Categories;
                     })
                 RequestMembers(client, guild.id);
             })

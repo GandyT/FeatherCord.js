@@ -60,7 +60,7 @@ class TextChannel {
                             return setTimeout(() => this.send(content), Response.retry_after);
                         }
                         if (Response.message) throw new Error(Response.message);
-                        resolve(new Message(this._client, Response, null, this));
+                        resolve(new Message(this._client, Response, null, this, this.guild));
                     });
                 // Regular Message
             } else {
@@ -73,7 +73,7 @@ class TextChannel {
                         }
                         if (Response.message) throw new Error(Response.message);
 
-                        resolve(new Message(this._client, Response, null, this));
+                        resolve(new Message(this._client, Response, null, this, this.guild));
                     });
                 // Embed
             }
@@ -91,7 +91,7 @@ class TextChannel {
                     }
                     if (Response.message) throw new Error(Response.message);
 
-                    resolve(new Message(this._client, Response, new Author(this._client, Response.author), this));
+                    resolve(new Message(this._client, Response, new Author(this._client, Response.author), this, this.guild));
                 });
         })
     }

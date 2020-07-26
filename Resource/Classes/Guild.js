@@ -27,6 +27,11 @@ class Guild {
     get channels() {
         return this._data._channels;
     }
+    get categories() {
+        return this._data.categories;
+    }
+
+    /* ACTIONS */
 }
 
 module.exports = Guild;
