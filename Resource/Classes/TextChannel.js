@@ -29,10 +29,13 @@ class TextChannel {
         return false;
     }
     get guild() {
-        return this._client.guilds.find(guild => guild.id == this._default.guild_id);
+        return this._client.guilds.find[this._default.guild_id];
     }
     get permissions() {
         return this._default.permission_overwrites;
+    }
+    get category() {
+        return this._client._guilds[this._default.guild_id]._categories.find(c => c.id == this._default.parent_id);
     }
 
     /* ACTIONS */
@@ -112,6 +115,25 @@ class TextChannel {
                     resolve();
                 });
         });
+    }
+
+    /* SETTERS */
+    edit(obj) {
+        obj.parent_id = obj.category_id;
+        delete obj.category_id;
+
+        return new Promise((resolve, reject) => {
+            FF.patch(`${Config.APIEND}/channels/${this.id}`, obj, { "authorization": `Bot ${this._client.token}` })
+                .then(res => {
+                    var Response = JSON.parse(res);
+                    if (Response.retry_after) {
+                        return setTimeout(() => this.modfiyChannel(key, value), Response.retry_after);
+                    }
+                    if (Response.message) throw new Error(Response.message);
+                    this._default = Response;
+                    resolve(this);
+                })
+        })
     }
 }
 

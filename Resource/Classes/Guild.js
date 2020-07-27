@@ -39,7 +39,7 @@ class Guild {
         var body = {}
         if (options.name) body.name = options.name;
         if (options.type) body.type = options.type == "text" ? 0 : options.type == "voice" ? 2 : "INVALID";
-        if (options.category) body.parent_id = options.category.id;
+        if (options.category_id) body.parent_id = options.category_id;
         if (options.topic) body.topic = options.topic;
         if (options.nsfw) body.nsfw = options.nsfw;
 

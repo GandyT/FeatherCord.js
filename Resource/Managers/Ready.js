@@ -25,11 +25,7 @@ function Ready(client) {
                         var Categories = [];
                         Channels.map(channel => {
                             if (channel.type == 0 || 1) {
-                                // Text or Voice Channel
-                                if (channel.parent_id) {
-                                    var category = Categories.find(c => c.id == channel.parent_id)
-                                    channel.category = category;
-                                }
+                                // Text Channel
                                 client._guilds[guild.id]._data._channels.push(new TextChannel(client, channel));
                             } else if (channel.type == 4) {
                                 // Category
