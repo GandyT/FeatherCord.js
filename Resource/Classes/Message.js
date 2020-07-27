@@ -40,6 +40,25 @@ class Message {
                 roles: this._data.mention_roles,
             }
     }
+    getReactions(emoji) {
+        return new Promise((resolve, reject) => {
+            FF.get(`${Config.APIEND}/channels/${this._data.channel_id}/messages/${this.id}/reactions/${encodeURI(emoji)}`, { "authorization": `Bot ${this._client.token}` })
+                .then(res => {
+                    var Response = JSON.parse(res);
+                    if (Response.retry_after) {
+                        return setTimeout(() => this.getReactions(emoji), Response.retry_after);
+                    }
+                    if (Response.message) throw new Error(Response.message);
+                    Response = Response.map(reaction => {
+                        reaction.name = emoji;
+                        return new Reaction(this._client, reaction, this);
+                    });
+                    resolve(Response);
+                });
+        });
+    }
+
+
     /* ACTIONS */
     delete() {
         return new Promise((resolve, reject) => {

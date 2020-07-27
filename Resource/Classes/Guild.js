@@ -38,7 +38,7 @@ class Guild {
     createChannel(options) {
         var body = {}
         if (options.name) body.name = options.name;
-        if (options.type) body.type = options.type == "text" ? 0 : options.type == "voice" ? 2 : "INVALID";
+        if (options.type) body.type = options.type == "text" ? 0 : options.type == "voice" ? 2 : options.type == "category" ? 4 : "INVALID";
         if (options.category_id) body.parent_id = options.category_id;
         if (options.topic) body.topic = options.topic;
         if (options.nsfw) body.nsfw = options.nsfw;
@@ -56,7 +56,9 @@ class Guild {
                     }
                     if (Response.message) throw new Error(Response.message);
 
-                    resolve(new TextChannel(this._client, Response));
+                    if (body.type == 0)
+                        resolve(new TextChannel(this._client, Response));
+                    resolve(Response);
                 });
         });
     }

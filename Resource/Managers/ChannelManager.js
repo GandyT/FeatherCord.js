@@ -14,7 +14,7 @@ module.exports = {
             client.emit("channelcreate", newChannel);
         } else {
             // CHANNEL DELETE
-            client._guilds[Data.guild_id]._data._channels = client._guilds[Data.guild.id].channels.filter(c => c.id !== Data.id);
+            client._guilds[Data.guild_id]._data._channels = client._guilds[Data.guild_id].channels.filter(c => c.id !== Data.id);
             client.emit("channeldelete", Data);
         }
     }
