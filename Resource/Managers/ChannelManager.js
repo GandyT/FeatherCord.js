@@ -10,11 +10,11 @@ module.exports = {
 
         if (Event == "CHANNEL_CREATE") {
             let newChannel = new TextChannel(client, Data);
-            client._guilds[Data.guild_id]._data._channels.push(newChannel);
+            client._guilds[Data.guild_id]._data.channels.push(newChannel);
             client.emit("channelcreate", newChannel);
         } else {
             // CHANNEL DELETE
-            client._guilds[Data.guild_id]._data._channels = client._guilds[Data.guild_id].channels.filter(c => c.id !== Data.id);
+            client._guilds[Data.guild_id]._data.channels = client._guilds[Data.guild_id].channels.filter(c => c.id !== Data.id);
             client.emit("channeldelete", Data);
         }
     }

@@ -47,6 +47,9 @@ class Client {
                 if (match(value))
                     return value;
         }
+        newPrototype.size = function () {
+            return Object.keys(this).length;
+        }
         Object.setPrototypeOf(this._guilds, newPrototype);
     }
 

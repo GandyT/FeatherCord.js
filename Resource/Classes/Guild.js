@@ -8,12 +8,11 @@ const TextChannel = require("./TextChannel.js");
 class Guild {
     constructor(client, data) {
         this._client = client;
-        this._id = data.id;
         this._data = data;
     }
     /* GETTERS */
     get id() {
-        return this._id;
+        return this._data.id;
     }
     get name() {
         return this._data.name;
@@ -25,10 +24,10 @@ class Guild {
         return this._data.features;
     }
     get members() {
-        return this._data._members;
+        return this._data.members;
     }
     get channels() {
-        return this._data._channels;
+        return this._data.channels;
     }
     get categories() {
         return this._data.categories;
