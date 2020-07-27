@@ -12,6 +12,3 @@ client.on("message", async (msg) => {
 
 
 client.login("NzM0ODcyMjMzNDQ4ODMzMDU0.Xxi3Og.e2MAlb7t5nvClUz33bs_YtWMHjQ");
-
-
-

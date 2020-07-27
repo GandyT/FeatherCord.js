@@ -3,6 +3,7 @@ const FF = require("../Modules/FeatherFetch.js");
 const Config = require("../Modules/Config.js");
 /* STRUCTURES */
 const Message = require("./Message.js");
+const Guild = require("./Guild.js");
 
 class TextChannel {
     constructor(Client, data) {
@@ -116,7 +117,47 @@ class TextChannel {
                 });
         });
     }
+    fetchMany(amount) {
+        return new Promise((resolve, reject) => {
+            FF.get(`${Config.APIEND}/channels/${this.id}/messages?limit=${amount}`, { "authorization": `Bot ${this._client.token}` })
+                .then(res => {
+                    var Response = JSON.parse(res);
+                    if (Response.retry_after) {
+                        return setTimeout(() => this.fetchMany(amount), Response.retry_after);
+                    }
+                    if (Response.message) throw new Error(Response.message);
+                    Response = Response.map(message => {
+                        return new Message(this._client, message, new Author(this._client, message.author), this, this.guild)
+                    });
+                    resolve(Response);
+                })
+        })
+    }
+    bulkDelete(amount) {
+        return new Promise((resolve, reject) => {
+            this.fetchMany(amount)
+                .then(messages => {
+                    var snowflakeArr = [];
+                    messages.forEach(message => {
+                        snowflakeArr.push(message.id);
+                    });
 
+                    FF.post(`${Config.APIEND}/channels/${this.id}/messages/bulk-delete`, { "messages": snowflakeArr }, { "authorization": `Bot ${this._client.token}` })
+                        .then(res => {
+                            if (res) {
+                                try {
+                                    var Response = JSON.parse(res);
+                                    if (Response.retry_after) {
+                                        return setTimeout(() => this.bulkDelete(amount), Response.retry_after);
+                                    }
+                                } catch { }
+                            }
+                            resolve();
+                        })
+                })
+
+        })
+    }
     /* SETTERS */
     edit(obj) {
         obj.parent_id = obj.category_id;
