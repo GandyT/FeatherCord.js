@@ -1,6 +1,7 @@
 class Role {
-    constructor(id) {
-        this._id = id;
+    constructor(client, data) {
+        this._client = client;
+        this._data = data;
     };
 }
 

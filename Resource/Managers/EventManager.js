@@ -2,6 +2,7 @@
 const Ready = require("./Ready.js");
 const MessageManager = require("./MessageManger.js");
 const ChannelManager = require("./ChannelManager.js");
+const MemberManager = require("./GuildMemberManager.js");
 
 class EventManager {
     constructor(client) {
@@ -9,6 +10,7 @@ class EventManager {
     }
 
     receive(payload) {
+        console.log(payload.t);
         switch (payload.t) {
             case "MESSAGE_CREATE":
             case "MESSAGE_DELETE":
@@ -23,6 +25,10 @@ class EventManager {
             case "CHANNEL_DELETE":
             case "CHANNEL_CREATE":
                 ChannelManager.receive(this.client, payload);
+                break;
+            case "GUILD_MEMBER_REMOVE":
+            case "GUILD_MEMBER_ADD":
+                MemberManager.receive(this.client, payload);
                 break;
         }
     }
