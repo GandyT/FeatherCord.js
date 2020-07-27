@@ -1,4 +1,5 @@
 const https = require("https");
+const FormData = require("form-data");
 
 module.exports = {
     "get": async function (api, headers = {}) {
@@ -27,7 +28,7 @@ module.exports = {
             });
         })
     },
-    "post": async function (api, body = {}, headers = {}) {
+    "post": async function (api, body = {}, headers = {}, formData) {
 
         if (!api) throw "Specify Endpoint";
 
@@ -40,7 +41,14 @@ module.exports = {
         const path = Query.slice(3).join("/");
         var port = 80;
         if (api.indexOf("https") != -1) port = 443;
-
+        var form;
+        if (formData) {
+            form = new FormData();
+            form.append(formData.name, formData.content);
+            for (let [key, value] of Object.entries(form.getHeaders())) {
+                headers[key] = value;
+            }
+        }
         var options = {
             hostname: hostname,
             path: "/" + path,
@@ -59,8 +67,13 @@ module.exports = {
                     resolve(data);
                 });
             });
-            request.write(JSON.stringify(body));
-            request.end();
+            if (form) {
+                form.pipe(request);
+            }
+            else {
+                request.write(JSON.stringify(body));
+                request.end();
+            }
         });
     },
     "put": async function (api, body = {}, headers = {}) {

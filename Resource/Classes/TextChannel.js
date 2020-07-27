@@ -1,6 +1,8 @@
 /* INTERNAL MODULES */
 const FF = require("../Modules/FeatherFetch.js");
 const Config = require("../Modules/Config.js");
+const Fs = require("fs");
+
 /* STRUCTURES */
 const Message = require("./Message.js");
 const Guild = require("./Guild.js");
@@ -40,8 +42,9 @@ class TextChannel {
     }
 
     /* ACTIONS */
-    send(content) {
+    send(content, file) {
         return new Promise((resolve, reject) => {
+
             if (!content) throw "Specify Message Content";
             var headers = {
                 authorization: `Bot ${this._client.token}`
@@ -55,8 +58,13 @@ class TextChannel {
                     embed: {},
                 }
 
+                if (file)
+                    var formData = {
+                        name: file,
+                        content: Fs.createReadStream(file)
+                    }
 
-                FF.post(`${Config.APIEND}/channels/${this._default.id}/messages`, body, headers)
+                FF.post(`${Config.APIEND}/channels/${this._default.id}/messages`, body, headers, file ? formData : null)
                     .then(res => {
                         var Response = JSON.parse(res);
                         if (Response.retry_after) {
@@ -68,6 +76,8 @@ class TextChannel {
                     });
                 // Regular Message
             } else {
+                content.file = file;
+
                 FF.post(`${Config.APIEND}/channels/${this._default.id}/messages`, content, headers)
                     .then(res => {
                         var Response = JSON.parse(res);
@@ -112,7 +122,6 @@ class TextChannel {
                             if (Response.message) throw new Error(Response.message);
                         } catch { }
                     }
-                    this._client._guilds[this._default.guild_id]._data._channels = this._client._guilds[this._default.guild_id].channels.filter(c => c.id != this.id);
                     resolve();
                 });
         });
@@ -174,6 +183,22 @@ class TextChannel {
                     this._default = Response;
                     resolve(this);
                 })
+        })
+    }
+    startTyping() {
+        return new Promise((resolve, reject) => {
+            FF.post(`${Config.APIEND}/channels/${this.id}/typing`, {}, { 'authorization': `Bot ${this._client.token}` })
+                .then(res => {
+                    if (res) {
+                        try {
+                            var Response = JSON.parse(res);
+                            if (Response.retry_after) {
+                                return setTimeout(() => this.startTyping(), Response.retry_after);
+                            }
+                        } catch { }
+                    }
+                    resolve();
+                });
         })
     }
 }

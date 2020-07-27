@@ -10,23 +10,24 @@ class DMChannel {
     constructor(client, data) {
         // @private
         this._client = client;
-        this._data = data;
-        this._data.recipients.map((user, index) => {
-            this._data.recipients[index] = new User(client, user);
+        this._default = data;
+        this._default.recipients.map((user, index) => {
+            this._default.recipients[index] = new User(client, user);
         });
     }
     get id() {
-        return this._data.id;
+        return this._default.id;
     }
     get dm() {
         return true;
     }
     get users() {
-        return this._data.recipients;
+        return this._default.recipients;
     }
     /* ACTIONS */
-    send(content) {
+    send(content, file) {
         return new Promise((resolve, reject) => {
+
             if (!content) throw "Specify Message Content";
             var headers = {
                 authorization: `Bot ${this._client.token}`
@@ -40,8 +41,13 @@ class DMChannel {
                     embed: {},
                 }
 
+                if (file)
+                    var formData = {
+                        name: file,
+                        content: Fs.createReadStream(file)
+                    }
 
-                FF.post(`${Config.APIEND}/channels/${this._data.id}/messages`, body, headers)
+                FF.post(`${Config.APIEND}/channels/${this._default.id}/messages`, body, headers, file ? formData : null)
                     .then(res => {
                         var Response = JSON.parse(res);
                         if (Response.retry_after) {
@@ -49,11 +55,13 @@ class DMChannel {
                             return setTimeout(() => this.send(content), Response.retry_after);
                         }
                         if (Response.message) throw new Error(Response.message);
-                        resolve(new Message(this._client, Response, null, this));
+                        resolve(new Message(this._client, Response, null, this, this.guild));
                     });
                 // Regular Message
             } else {
-                FF.post(`${Config.APIEND}/channels/${this._data.id}/messages`, content, headers)
+                content.file = file;
+
+                FF.post(`${Config.APIEND}/channels/${this._default.id}/messages`, content, headers)
                     .then(res => {
                         var Response = JSON.parse(res);
                         if (Response.retry_after) {
@@ -62,7 +70,7 @@ class DMChannel {
                         }
                         if (Response.message) throw new Error(Response.message);
 
-                        resolve(new Message(this._client, Response, null, this));
+                        resolve(new Message(this._client, Response, null, this, this.guild));
                     });
                 // Embed
             }

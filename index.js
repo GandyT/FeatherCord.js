@@ -8,6 +8,7 @@ client.on("ready", async () => {
 client.on("message", async (msg) => {
     if (msg.author.bot) return;
     var channel = msg.channel;
+    channel.send("Files", "./test.txt");
 });
 
 
