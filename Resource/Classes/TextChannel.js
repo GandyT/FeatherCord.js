@@ -42,14 +42,30 @@ class TextChannel {
     }
 
     /* ACTIONS */
-    send(content, file) {
+    send(content) {
         return new Promise((resolve, reject) => {
 
             if (!content) throw "Specify Message Content";
             var headers = {
                 authorization: `Bot ${this._client.token}`
             }
-            if (!content.embed) {
+            if (content.file) {
+                // File
+                var formData = {
+                    name: content.file,
+                    content: Fs.createReadStream(content.file)
+                }
+                FF.post(`${Config.APIEND}/channels/${this._default.id}/messages`, {}, headers, content.file ? formData : null)
+                    .then(res => {
+                        var Response = JSON.parse(res);
+                        if (Response.retry_after) {
+                            // Rate Limited
+                            return setTimeout(() => this.send(content), Response.retry_after);
+                        }
+                        if (Response.message) throw new Error(Response.message);
+                        resolve(new Message(this._client, Response, null, this, this.guild));
+                    });
+            } else if (!content.embed) {
                 content = String(content);
                 if (content.length > 2000) throw new Error("2000 character limit for text messages");
                 var body = {
@@ -58,13 +74,7 @@ class TextChannel {
                     embed: {},
                 }
 
-                if (file)
-                    var formData = {
-                        name: file,
-                        content: Fs.createReadStream(file)
-                    }
-
-                FF.post(`${Config.APIEND}/channels/${this._default.id}/messages`, body, headers, file ? formData : null)
+                FF.post(`${Config.APIEND}/channels/${this._default.id}/messages`, body, headers, content.file ? formData : null)
                     .then(res => {
                         var Response = JSON.parse(res);
                         if (Response.retry_after) {

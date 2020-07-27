@@ -68,7 +68,7 @@ module.exports = {
                 });
             });
             if (form) {
-                form.pipe(request);
+                form.pipe(request)
             }
             else {
                 request.write(JSON.stringify(body));
