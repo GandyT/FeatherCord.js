@@ -12,6 +12,7 @@ module.exports = {
             /* DATA MODIFICATION/FORMATTING */
             Data.members = Data.members.map(member => {
                 member.user = new User(client, member.user);
+                member.guild_id = Data.id;
                 return new Member(client, member);
             });
             var categories = [];

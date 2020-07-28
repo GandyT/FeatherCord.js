@@ -16,7 +16,6 @@ module.exports = {
         const Event = payload.t;
 
         /* VARIABLES */
-
         var channel;
         var guild;
         if (!data.guild_id) {

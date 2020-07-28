@@ -2,6 +2,7 @@
 const FF = require("../Modules/FeatherFetch.js");
 const Config = require("../Modules/Config.js");
 const Reaction = require("./Reaction.js");
+const Member = require("./Member.js");
 
 class Message {
     constructor(client, data, author, channel, guild) {
@@ -39,6 +40,9 @@ class Message {
                 members: this._data.mentions,
                 roles: this._data.mention_roles,
             }
+    }
+    get member() {
+        return this._client._guilds[this._data.guild_id]._data.members.find(member => member.id == this.author.id)
     }
     getReactions(emoji) {
         return new Promise((resolve, reject) => {
