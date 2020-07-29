@@ -11,6 +11,7 @@ class EventManager {
     }
 
     receive(payload) {
+        console.log(payload.t);
         switch (payload.t) {
             case "MESSAGE_CREATE":
             case "MESSAGE_DELETE":

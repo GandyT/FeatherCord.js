@@ -4,11 +4,17 @@ const Config = require("../Modules/Config.js");
 
 /* STRUCTURES */
 const TextChannel = require("./TextChannel.js");
+const Role = require("./Role.js");
 
 class Guild {
     constructor(client, data) {
         this._client = client;
         this._data = data;
+        this._data.roles = this._data.roles.map(role => {
+            if (!role.position) return;
+            role.guild_id = data.id;
+            return new Role(client, role);
+        });
     }
     /* GETTERS */
     get id() {
@@ -32,7 +38,9 @@ class Guild {
     get categories() {
         return this._data.categories;
     }
-
+    get roles() {
+        return this._data.roles;
+    }
     /* ACTIONS */
     createChannel(options) {
         var body = {}
@@ -59,6 +67,39 @@ class Guild {
                         resolve(new TextChannel(this._client, Response));
                     resolve(Response);
                 });
+        });
+    }
+    createRole(options) {
+        /* 
+        name: string,
+        permissions: array of perm names,
+        color: hex or rgb value
+        hoist: bool (should the role be displayed separately in the side bar)
+        mentionable: bool
+        */
+        if (Array.isArray(options.permissions)) {
+            var int = 0;
+            for (let perm in options.permissions) {
+                int = int | Config.PERMS[perm.toLowerCase()];
+            }
+            options.permissions = int;
+        }
+        if (options.color.charAt(0) == "#") {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(options.color);
+            options.color = `${parseInt(result[1], 16)}${parseInt(result[2], 16)}${parseInt(result[3], 16)}`;
+        }
+
+        return new Promise((resolve, reject) => {
+            FF.post(`${Config.APIEND}/guilds/${this.id}/roles`, options, { "authorization": `Bot ${this._client.token}` })
+                .then(res => {
+                    const Response = JSON.parse(res);
+                    if (Response.retry_after) {
+                        return setTimeout(() => this.createRole(options));
+                    }
+                    if (Response.message) throw new Error(Response.message);
+                    Response.guild_id = this.id;
+                    resolve(new Role(this._client, Response));
+                })
         });
     }
 }
