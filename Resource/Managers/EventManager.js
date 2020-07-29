@@ -28,6 +28,7 @@ class EventManager {
                 break;
             case "GUILD_MEMBER_REMOVE":
             case "GUILD_MEMBER_ADD":
+            case "GUILD_MEMBER_UPDATE":
                 MemberManager.receive(this.client, payload);
                 break;
             case "GUILD_CREATE":
