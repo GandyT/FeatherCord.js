@@ -64,16 +64,12 @@ module.exports = {
                 client._listen[author.id](Environment);
                 delete client._listen[author.id];
             } else {
-                client._commands.forEach(command => {
+                client._commands.map(command => {
                     if (client._commands.length && client.prefix && SentMessage.content.startsWith(client.prefix)) {
                         if (command.Aliases.includes(Environment.args[0])) {
                             command.Callback(Environment);
-                            if (command._listen.length) {
-                                command.listening[author.id] = 1;
-                            }
                         }
                     }
-                    return command;
                 });
             }
 
