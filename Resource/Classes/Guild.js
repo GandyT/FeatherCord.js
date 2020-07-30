@@ -16,7 +16,7 @@ class Guild {
                 role.guild_id = data.id;
                 return new Role(client, role);
             });
-            this._data.roles.shift();
+            this._data.roles = this._data.roles.filter(r => r);
         } catch { }
     }
     /* GETTERS */

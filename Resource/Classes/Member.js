@@ -16,7 +16,7 @@ class Member {
         return this._data.user.id
     }
     get roles() {
-        return this._client._guilds[this._data.guild_id].roles.filter(r => this._data.roles.includes(r.id));
+        return this._client._guilds[this._data.guild_id].roles.filter(r => r && this._data.roles.includes(r.id));
     }
     get nickname() {
         return this._data.nick;

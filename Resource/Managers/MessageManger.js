@@ -26,8 +26,10 @@ module.exports = {
                     channel = new DMChannel(client, Response)
                 });
         } else {
-            guild = client.guilds.find(g => g.id == data.guild_id);
-            channel = guild.channels.find(c => c.id == data.channel_id);
+            try {
+                guild = client.guilds.find(g => g.id == data.guild_id);
+                channel = guild.channels.find(c => c.id == data.channel_id);
+            } catch { }
         }
 
         if (data.mentions) {
