@@ -10,11 +10,14 @@ class Guild {
     constructor(client, data) {
         this._client = client;
         this._data = data;
-        this._data.roles = this._data.roles.map(role => {
-            if (!role.position) return;
-            role.guild_id = data.id;
-            return new Role(client, role);
-        });
+        try {
+            this._data.roles = this._data.roles.map(role => {
+                if (!role.position) return;
+                role.guild_id = data.id;
+                return new Role(client, role);
+            });
+            this._data.roles.shift();
+        } catch { }
     }
     /* GETTERS */
     get id() {

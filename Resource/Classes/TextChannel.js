@@ -182,6 +182,25 @@ class TextChannel {
         obj.parent_id = obj.category_id;
         delete obj.category_id;
 
+        if (obj.permission_overwrites)
+            obj.permission_overwrites.forEach(permission => {
+                if (Array.isArray(permission.allow)) {
+                    var int = 0;
+                    for (let perm in permission.allow) {
+                        int = int | Config.PERMS[perm.toLowerCase()];
+                    }
+                    permission.allow = int;
+                }
+                if (Array.isArray(permission.deny)) {
+                    var int = 0;
+                    for (let perm in permission.deny) {
+                        int = int | Config.PERMS[perm.toLowerCase()];
+                    }
+                    permission.deny = int;
+                }
+                return permission;
+            });
+
         return new Promise((resolve, reject) => {
             FF.patch(`${Config.APIEND}/channels/${this.id}`, obj, { "authorization": `Bot ${this._client.token}` })
                 .then(res => {

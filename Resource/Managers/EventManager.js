@@ -4,6 +4,8 @@ const MessageManager = require("./MessageManger.js");
 const ChannelManager = require("./ChannelManager.js");
 const MemberManager = require("./GuildMemberManager.js");
 const GuildManager = require("./GuildManager.js");
+const PresenceManager = require("./PresenceManager.js");
+const RoleManager = require("./RoleManager.js");
 
 class EventManager {
     constructor(client) {
@@ -11,7 +13,6 @@ class EventManager {
     }
 
     receive(payload) {
-        console.log(payload.t);
         switch (payload.t) {
             case "MESSAGE_CREATE":
             case "MESSAGE_DELETE":
@@ -33,6 +34,14 @@ class EventManager {
                 break;
             case "GUILD_CREATE":
                 GuildManager.receive(this.client, payload);
+                break;
+            case "PRESENCE_UPDATE":
+                PresenceManager.receive(this.client, payload);
+                break;
+            case "GUILD_ROLE_CREATE":
+            case "GUILD_ROLE_UPDATE":
+            case "GUILD_ROLE_DELETE":
+                RoleManager.receive(this.client, payload)
                 break;
         }
     }

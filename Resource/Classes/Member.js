@@ -1,6 +1,7 @@
 /* INTERNAL MODULES */
 const FF = require("../Modules/FeatherFetch.js");
 const Config = require("../Modules/Config.js");
+const Role = require("./Role.js");
 
 class Member {
     constructor(client, data) {
@@ -15,7 +16,9 @@ class Member {
         return this._data.user.id
     }
     get roles() {
-        return this._data.roles;
+        return this._data.roles.map(id => {
+            return new Role(this._client, this._client._guilds[this._data.guild_id].roles.find(r => r.id == id));
+        });
     }
     get nickname() {
         return this._data.nick;
