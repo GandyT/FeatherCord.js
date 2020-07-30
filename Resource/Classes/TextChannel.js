@@ -86,9 +86,18 @@ class TextChannel {
                     });
                 // Regular Message
             } else {
-                content.file = file;
+                let embedbody = {}
+                if (content.embed.title) embedbody.title = content.embed.title;
+                if (content.embed.color) embedbody.color = content.embed.color;
+                if (content.embed.url) embedbody.url = content.embed.url;
+                if (content.embed.description) embedbody.description = content.embed.description;
+                if (content.embed.fields) embedbody.fields = content.embed.fields;
+                if (content.embed.thumbnail) embedbody.thumbnail = content.embed.thumbnail;
+                if (content.embed.image) embedbody.image = content.embed.image;
+                if (content.embed.footer) embedbody.footer = content.embed.footer;
+                if (content.embed.author) embedbody.author = content.embed.author;
 
-                FF.post(`${Config.APIEND}/channels/${this._default.id}/messages`, content, headers)
+                FF.post(`${Config.APIEND}/channels/${this._default.id}/messages`, { embed: embedbody }, headers)
                     .then(res => {
                         var Response = JSON.parse(res);
                         if (Response.retry_after) {
