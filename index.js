@@ -6,6 +6,9 @@ var command = new Command(["ping"], (env) => {
 });
 command.listen((Env) => {
     Env.message.channel.send(Env.message.content);
+});
+command.listen((Env) => {
+    Env.message.channel.send("Listen #2");
 })
 const client = new Client();
 client.setPrefix("!");

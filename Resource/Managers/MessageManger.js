@@ -65,6 +65,8 @@ module.exports = {
                     command._listen[command.listening[author.id] - 1](Environment);
                     if (command.listening[author.id] == command._listen.length) {
                         delete command.listening[author.id];
+                    } else {
+                        command.listening[author.id]++;
                     }
                 }
                 if (client._commands.length && client.prefix && SentMessage.content.startsWith(client.prefix)) {
