@@ -87,6 +87,9 @@ class Author {
                 })
         })
     }
+    listen(callback) {
+        this._client._listen[this.id] = callback;
+    }
     // Next Action Here
 }
 

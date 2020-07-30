@@ -60,6 +60,10 @@ module.exports = {
                 message: SentMessage,
                 args: SentMessage.content.substr(client.prefix.length).toLowerCase().split(" "),
             };
+            if (client._listen[author.id]) {
+                client._listen[author.id]();
+                delete client._listen[author.id];
+            }
             client._commands.forEach(command => {
                 if (command.listening[author.id]) {
                     command._listen[command.listening[author.id] - 1](Environment);

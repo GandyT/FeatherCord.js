@@ -23,6 +23,7 @@ class Client {
         this._loggedin = false;
         this._data;
         this._commands = [];
+        this._listen = {};
 
         /* CLIENT ACTIONS */
         this.login = Login.bind(this);
