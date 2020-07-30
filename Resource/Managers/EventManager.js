@@ -25,6 +25,7 @@ class EventManager {
                 break;
             case "CHANNEL_DELETE":
             case "CHANNEL_CREATE":
+            case "CHANNEL_UPDATE":
                 ChannelManager.receive(this.client, payload);
                 break;
             case "GUILD_MEMBER_REMOVE":
