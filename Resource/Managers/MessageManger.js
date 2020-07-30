@@ -61,8 +61,9 @@ module.exports = {
                 args: SentMessage.content.substr(client.prefix.length).toLowerCase().split(" "),
             };
             if (client._listen[author.id]) {
-                client._listen[author.id](Environment);
+                var func = client._listen[author.id];
                 delete client._listen[author.id];
+                func(Environment);
             } else {
                 client._commands.map(command => {
                     if (client._commands.length && client.prefix && SentMessage.content.startsWith(client.prefix)) {
