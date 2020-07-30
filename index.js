@@ -7,6 +7,7 @@ client.on("ready", async () => {
 
 client.on("message", async (msg) => {
     if (msg.author.bot) return;
+    await msg.member.addRole("655555379597672470");
     console.log(msg.member.roles);
 });
 
