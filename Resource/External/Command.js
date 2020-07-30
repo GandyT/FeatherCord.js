@@ -11,10 +11,6 @@ class Command {
         return this._aliases;
     }
 
-    listen(callback) {
-        this._listen.push(callback);
-        return this;
-    }
 }
 
 module.exports = Command;
