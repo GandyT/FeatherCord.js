@@ -82,6 +82,7 @@ class Client {
                     return channel;
     }
     addCommand(command) {
+        command._client = this;
         this._commands.push(command);
     }
 }
