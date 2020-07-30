@@ -16,9 +16,7 @@ class Member {
         return this._data.user.id
     }
     get roles() {
-        return this._data.roles.map(id => {
-            return new Role(this._client, this._client._guilds[this._data.guild_id].roles.find(r => r.id == id));
-        });
+        return this._client._guilds[this._data.guild_id].roles.find(r => r.id == id);
     }
     get nickname() {
         return this._data.nick;
@@ -47,6 +45,7 @@ class Member {
                             return setTimeout(() => this.setNickname(nickname), Response.retry_after);
                         }
                     } catch { }
+                    this._data.nick = nickname;
                     resolve(this);
                 })
         });
@@ -94,6 +93,7 @@ class Member {
                         }
                         if (Response.message) throw new Error(Response.message);
                     } catch { }
+                    this._data.roles.push(this._client._guilds[this._data.guild_id]._data.roles.find(r => r.id == id));
                     resolve();
                 })
         })
@@ -109,6 +109,7 @@ class Member {
                         }
                         if (Response.message) throw new Error(Response.message);
                     } catch { }
+                    this._data.roles = this._data.roles.filter(r => r.id != id);
                     resolve();
                 })
         })

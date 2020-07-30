@@ -3,7 +3,6 @@ const Guild = require("../Classes/Guild.js");
 const Member = require("../Classes/Member.js");
 const TextChannel = require("../Classes/TextChannel.js");
 const User = require("../Classes/User.js");
-const Role = require("../Classes/Role.js");
 
 module.exports = {
     "receive": function (client, payload) {

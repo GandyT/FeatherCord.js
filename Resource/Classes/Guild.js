@@ -66,8 +66,11 @@ class Guild {
                     }
                     if (Response.message) throw new Error(Response.message);
 
-                    if (body.type == 0)
-                        resolve(new TextChannel(this._client, Response));
+                    if (body.type == 0) {
+                        let channel = new TextChannel(this._client, Response);
+                        this._data.channels.push(channel);
+                        resolve(channel);
+                    }
                     resolve(Response);
                 });
         });
@@ -101,7 +104,9 @@ class Guild {
                     }
                     if (Response.message) throw new Error(Response.message);
                     Response.guild_id = this.id;
-                    resolve(new Role(this._client, Response));
+                    let role = new Role(this._client, Response);
+                    this._data.roles.push(role);
+                    resolve(role);
                 })
         });
     }

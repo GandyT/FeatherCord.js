@@ -55,6 +55,7 @@ class Role {
                     return setTimeout(() => this.edit(options), Response.retry_after);
                 }
                 if (Response.message) throw new Error(Response.message);
+                this._data = Response;
                 resolve(new Role(this._client, Response));
             });
     }
