@@ -61,7 +61,7 @@ module.exports = {
                 args: SentMessage.content.substr(client.prefix.length).toLowerCase().split(" "),
             };
             if (client._listen[author.id]) {
-                client._listen[author.id]();
+                client._listen[author.id](Environment);
                 delete client._listen[author.id];
             }
             client._commands.forEach(command => {
