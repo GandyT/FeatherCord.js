@@ -23,7 +23,7 @@ module.exports = {
                     categories.push(channel);
                 }
             });
-
+            Data.channels = Data.channels.filter(c => c);
             // Did Role Management Internally for some reason
 
             var guild = new Guild(this, Data);
