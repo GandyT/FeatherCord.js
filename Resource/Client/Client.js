@@ -22,6 +22,7 @@ class Client {
         this._gateway = undefined;
         this._loggedin = false;
         this._data;
+        this._commands = [];
 
         /* CLIENT ACTIONS */
         this.login = Login.bind(this);
@@ -66,12 +67,21 @@ class Client {
     get username() {
         return this._data.username;
     }
+    get commands() {
+        return this._commands;
+    }
     /* DISCORD RELATED ACTIONS */
+    setPrefix(prefix) {
+        this.prefix = prefix;
+    }
     findChannel(match) {
         for (let value of Object.values(this._guilds))
             for (let channel of value.channels)
                 if (match(channel))
                     return channel;
+    }
+    addCommand(command) {
+        this._commands.push(command);
     }
 }
 

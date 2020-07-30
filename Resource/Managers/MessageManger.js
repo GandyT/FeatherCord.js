@@ -51,6 +51,33 @@ module.exports = {
         if (Event == "MESSAGE_CREATE") {
             let author = new Author(client, data.author);
             let SentMessage = new Message(client, data, author, channel, guild);
+            if (author.bot) {
+                return;
+            };
+
+            let Environment = {
+                client: client,
+                message: SentMessage,
+                args: SentMessage.content.substr(client.prefix.length).toLowerCase().split(" "),
+            };
+            client._commands.forEach(command => {
+                if (command.listening[author.id]) {
+                    command._listen[command.listening[author.id] - 1](Environment);
+                    if (command.listening[author.id] == command._listen.length) {
+                        delete command.listening[author.id];
+                    }
+                }
+                if (client._commands.length && client.prefix && SentMessage.content.startsWith(client.prefix)) {
+                    if (command.Aliases.includes(Environment.args[0])) {
+                        command.Callback(Environment);
+                        if (command._listen.length) {
+                            command.listening[author.id] = 1;
+                        }
+                    }
+                }
+                return command;
+            });
+
             return client.emit("message", SentMessage);
         }
         if (Event == "MESSAGE_DELETE") {
