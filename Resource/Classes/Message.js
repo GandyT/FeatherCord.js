@@ -68,12 +68,6 @@ class Message {
         return new Promise((resolve, reject) => {
             FF.delete(`${Config.APIEND}/channels/${this.channel.id}/messages/${this.id}`, { 'authorization': `Bot ${this._client.token}` })
                 .then((res) => {
-                    if (res) {
-                        var Response = JSON.parse(res);
-                        if (Response.retry_after) {
-                            return setTimeout(() => this.react(emoji), Response.retry_after);
-                        }
-                    }
                     resolve();
                 });
         })
